@@ -39,7 +39,7 @@ namespace rviz_lifecycle_plugin
 
     void RvizLifecyclePlugin::get_node_name_and_namespace(
         const std::string& fully_qualified_name,
-        std::string& name, 
+        std::string& name,
         std::string& name_space){
 
         auto pos = fully_qualified_name.rfind("/");
@@ -65,7 +65,7 @@ namespace rviz_lifecycle_plugin
             get_node_name_and_namespace(fully_qualified_name, node_name, node_namespace);
 
             auto services_names_types = utility_node_->get_service_names_and_types_by_node(node_name, node_namespace);
-            
+
             bool lifecycle_found = false;
             for(const auto& kv : services_names_types){
                 for(const auto& type_name : kv.second){
@@ -88,7 +88,7 @@ namespace rviz_lifecycle_plugin
 
     void RvizLifecyclePlugin::request_lifecycle_node_state(const std::string& fully_qualified_name){
         auto client = lifecycle_clients_[fully_qualified_name];
-        
+
         // If client is not available, we set the state to unknown
         if(!client){
             std::lock_guard<std::mutex> lock(lifecycle_node_states_mutex_);
@@ -97,7 +97,7 @@ namespace rviz_lifecycle_plugin
         }
 
         auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
-        
+
         client->async_send_request(request, [this, fully_qualified_name](GetStateClient::SharedFuture response){
                 std::lock_guard<std::mutex> lock(lifecycle_node_states_mutex_);
                 lifecycle_node_states_[fully_qualified_name] = response.get()->current_state;
@@ -118,7 +118,7 @@ namespace rviz_lifecycle_plugin
             auto node_status_label = dynamic_cast<QLabel*>(nodes_states_table_->cellWidget(row, 1));
             if(node_status_label && node_status_label->text().toStdString() != state.label){
                 node_status_label->setText(QString::fromStdString(state.label));
-                
+
                 set_label_color(node_status_label, state);
             }
         }
@@ -129,7 +129,7 @@ namespace rviz_lifecycle_plugin
         if(state_to_color_.find(state.id) != state_to_color_.end()){
             ss << "QLabel { color: " << state_to_color_[state.id] << ";}";
             label->setStyleSheet(ss.str().c_str());
-        } 
+        }
         else {
             ss << "QLabel { color: " << default_color_ << ";}";
             label->setStyleSheet(ss.str().c_str());
@@ -162,7 +162,7 @@ namespace rviz_lifecycle_plugin
 
     void RvizLifecyclePlugin::update_ui() {
         std::lock_guard<std::mutex> lock(lifecycle_node_states_mutex_);
-                    
+
         size_t idx = 0;
         for(const auto& kv : lifecycle_node_states_){
             auto fully_qualified_node_name = kv.first;

@@ -25,12 +25,12 @@ namespace rviz_lifecycle_plugin
         virtual ~RvizLifecyclePlugin();
 
     private:
-        
+
         /*
         *  Update list clients to fetch the state of the lifecycle nodes
         */
         void update_lifecycle_clients();
-        
+
         /*
         *  Requests the status of the lifecycle node
         */
@@ -65,7 +65,7 @@ namespace rviz_lifecycle_plugin
         QScrollArea *scroll_area_;
         QThread* thread_;
         QTimer *timer_;
-        
+
         // store fully qualified node names
         std::unordered_map<std::string, std::shared_ptr<GetStateClient>> lifecycle_clients_;
 
@@ -86,7 +86,7 @@ namespace rviz_lifecycle_plugin
             {15, "#FF4500"}, // orange red
         };
         const std::string default_color_ = "#000000"; // black
-           
+
 
         std::shared_ptr<std::thread> monitoring_thread_;
         std::shared_ptr<std::thread> update_ui_thread_;
